@@ -38,12 +38,14 @@ func (wran *WRandom) AddElement(weight uint) int {
 
 //Pick random pick an element
 func (wran *WRandom) Pick() int {
-	ran := uint(rand.Intn(int(wran.totalWeight)))
-	for i := 0; i < wran.numElement; i++ {
-		if ran < wran.weight[i] {
-			return i
+	if wran.totalWeight > 0 {
+		ran := uint(rand.Intn(int(wran.totalWeight)))
+		for i := 0; i < wran.numElement; i++ {
+			if ran < wran.weight[i] {
+				return i
+			}
+			ran -= wran.weight[i]
 		}
-		ran -= wran.weight[i]
 	}
 	//by default return first element
 	return 0
