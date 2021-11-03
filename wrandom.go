@@ -1,6 +1,10 @@
 package gowrandom
 
-import "math/rand"
+import (
+	crypto_rand "crypto/rand"
+	"encoding/binary"
+	"math/rand"
+)
 
 type WRandom struct {
 	numElement   int
@@ -38,6 +42,12 @@ func (wran *WRandom) AddElement(weight uint) int {
 
 //Pick random pick an element
 func (wran *WRandom) Pick() int {
+	var b [8]byte
+	_, err := crypto_rand.Read(b[:])
+	if err != nil {
+		panic("cannot seed math/rand package with cryptographically secure random number generator")
+	}
+	rand.Seed(int64(binary.LittleEndian.Uint64(b[:])))
 	if wran.totalWeight > 0 {
 		ran := uint(rand.Intn(int(wran.totalWeight)))
 		for i := 0; i < wran.numElement; i++ {
