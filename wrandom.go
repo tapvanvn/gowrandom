@@ -3,6 +3,7 @@ package gowrandom
 import (
 	crypto_rand "crypto/rand"
 	"encoding/binary"
+	"fmt"
 	"math/rand"
 )
 
@@ -20,8 +21,8 @@ func MakeWRandom(numElement int) *WRandom {
 	}
 	wran := &WRandom{
 		numElement:   numElement,
-		weight:       make([]uint, numElement),
-		originWeight: make([]uint, numElement),
+		weight:       make([]uint, numElement, numElement),
+		originWeight: make([]uint, numElement, numElement),
 		totalWeight:  0,
 	}
 	return wran
@@ -105,5 +106,12 @@ func (wran *WRandom) Reset() {
 	for i := 0; i < wran.numElement; i++ {
 		wran.weight[i] = wran.originWeight[i]
 		wran.totalWeight += int(wran.weight[i])
+	}
+}
+
+func (wran *WRandom) PrintDebug() {
+	fmt.Printf("randomer:%d totalWeight:%d\n", wran.numElement, wran.totalWeight)
+	for i := 0; i < wran.numElement; i++ {
+		fmt.Printf("\ti:%d oriWeight:%d curWeight:%d\n", i, wran.originWeight[i], wran.weight[i])
 	}
 }
